@@ -17,11 +17,17 @@ def add_access_token_to_file(private_key, access_token, proxy, user_agent):
     try:
         with open("./data/accounts.txt", "r") as file:
             for line in file:
-                account = json.loads(line.strip())
-                if account["private_key"] == private_key:
-                    account["valid_until"] = valid_until_str
-                    account["access_token"] = access_token
-                    updated = True
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    account = json.loads(line)
+                    if account["private_key"] == private_key:
+                        account["valid_until"] = valid_until_str
+                        account["access_token"] = access_token
+                        updated = True
+                except json.JSONDecodeError:
+                    continue
                 accounts_data.append(account)
     except FileNotFoundError:
         pass
